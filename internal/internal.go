@@ -5,16 +5,8 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/fsnotify/fsnotify"
-
 	"github.com/astr0n8t/inotify-tasker/config"
 )
-
-// Kills the current sessioon and tries to start a new one
-func Reload(e fsnotify.Event) {
-	log.Printf("Config file changed: %v Reloading config", e.Name)
-	log.Printf("Reloaded config: %v", e.Name)
-}
 
 // Runs inotify-tasker
 func Run() {
@@ -23,11 +15,8 @@ func Run() {
 	config := config.Config()
 	log.Printf("Loaded config file %v", config.ConfigFileUsed())
 
-	// Add config hot reloading
-	config.OnConfigChange(Reload)
-	config.WatchConfig()
-	log.Printf("Watching config for changes")
-
+	// Start the main loop
+	go Watch()
 
 	// Don't exit until we receive stop from the OS
 	stop := make(chan os.Signal, 1)

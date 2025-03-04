@@ -3,7 +3,7 @@ module github.com/astr0n8t/inotify-tasker
 go 1.23.5
 
 require (
-	github.com/fsnotify/fsnotify v1.8.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
 )

@@ -1,0 +1,19 @@
+---
+# Should be placed in either /etc/inotify-tasker/config.yaml or in the cwd
+
+# Env variables can be specified using prefix INOTIFY_TASKER_ 
+# e.g. INOTIFY_TASKER_RECURSIVE=false
+
+# Directory to watch
+directory: /watch
+# Whether or not to recurse folders
+recursive: false 
+# Interval to check for files in seconds
+interval: 60
+# Method to consider files unique
+# options are filename or hash
+# filename: simply the absolute path to the file
+# hash: opens each file and computes the sha256 hash of the file
+method: filename
+# Whether to reset the cache when the watched dir is empty or not
+clear_on_empty: true

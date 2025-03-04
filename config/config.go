@@ -51,7 +51,12 @@ func init() {
 func readViperConfig(appName string) *viper.Viper {
 	v := viper.New()
 
-	//v.SetDefault("option", "")
+	v.SetDefault("interval", 60)
+	v.SetDefault("directory", "/watch")
+	v.SetDefault("recursive", false)
+	v.SetDefault("method", "filename")
+	v.SetDefault("verbose", false)
+	v.SetDefault("clear_on_empty", true)
 
 	v.SetConfigName("config")
 	v.SetConfigType("yaml")
