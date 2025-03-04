@@ -48,7 +48,7 @@ func (h *History) newKey(f string) (string, error) {
 func (h *History) addEntry(k string, f string) error {
 	_, ok := h.seen[k]
 	if ok {
-		return fmt.Errorf("issue adding entry %v as it already exists", f)
+		return fmt.Errorf("issue adding entry: %v as it already exists", f)
 	}
 
 	h.seen[k] = f

@@ -40,7 +40,7 @@ func Watch() {
 		fileList := make([]FileEntry, 0)
 
 		// Get the list of files to look at
-		makeFileList(directory, recursive, fileList)
+		makeFileList(directory, recursive, &fileList)
 
 		// If the file list is empty, let's clear the cache if var set
 		if len(fileList) == 0 {
@@ -71,7 +71,7 @@ func Watch() {
 // directory string: the directory that is being watched
 // recursive bool: whether to descend into sub-dirs
 // fileList: the slice to store the FileEntry objects in
-func makeFileList(directory string, recursive bool, fileList []FileEntry) {
+func makeFileList(directory string, recursive bool, fileList *[]FileEntry) {
 	// Check if we should descend into sub-dirs
 	if recursive {
 		// Use filepath since it will do what we want
@@ -79,7 +79,7 @@ func makeFileList(directory string, recursive bool, fileList []FileEntry) {
 			// We don't want to add directories
 			if !f.IsDir() {
 				// Append the info we need to our slice
-				fileList = append(fileList, FileEntry{
+				*fileList = append(*fileList, FileEntry{
 					Path: path,
 					Mode: f.Mode(),
 				})
@@ -87,20 +87,20 @@ func makeFileList(directory string, recursive bool, fileList []FileEntry) {
 			return err
 		})
 		if err != nil {
-			log.Fatalf("issue reading watch directory %v", err)
+			log.Fatalf("issue reading watch directory: %v", err)
 		}
 	} else {
 		// Just use a normal os readdir
 		entries, err := os.ReadDir(directory)
 		if err != nil {
-			log.Fatalf("issue reading watch directory %v", err)
+			log.Fatalf("issue reading watch directory: %v", err)
 		}
 		// Iterate over the results of the readdir
 		for _, f := range entries {
 			// Again no dirs
 			if !f.IsDir() {
 				// Add just the info we need
-				fileList = append(fileList, FileEntry{
+				*fileList = append(*fileList, FileEntry{
 					Path: directory + "/" + f.Name(),
 					Mode: f.Type(),
 				})
@@ -120,24 +120,26 @@ func processFileList(history *History, fileList []FileEntry, verbose bool) {
 	// Iterate over our FileEntry objects
 	for _, e := range fileList {
 		if verbose {
-			log.Printf("Processing entry %v", e.Path)
+			log.Printf("Processing entry: %v", e.Path)
 		}
 		// Grab the key
 		key, err := history.newKey(e.Path)
 		// Check to make sure our key actually got created
-		if err != nil || key == "" {
-			log.Printf("ERROR: could not hash entry %v : %v", e.Path, err)
-			// Entry needs to be added
+		if err != nil  {
+			log.Printf("ERROR: could not hash entry: %v : %v", e.Path, err)
+		} else if key == "" {
+			log.Printf("Entry already contained in history or has duplicate hash: %v", e.Path)
+		// Entry needs to be added
 		} else {
 			// Try to update file
 			err := UpdateFile(e.Path, e.Mode)
 			if err != nil {
-				log.Printf("ERROR: issue processing entry %v : %v", e.Path, err)
+				log.Printf("ERROR: issue processing entry: %v : %v", e.Path, err)
 			} else {
 				// We can add the entry
 				history.addEntry(key, e.Path)
 				if verbose {
-					log.Printf("Processed entry %v with key %v", e.Path, key)
+					log.Printf("Processed entry: %v with key: %v", e.Path, key)
 				}
 			}
 		}

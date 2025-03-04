@@ -4,7 +4,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
@@ -28,8 +27,6 @@ type Provider interface {
 	InConfig(key string) bool
 	IsSet(key string) bool
 	UnmarshalKey(string, interface{}, ...viper.DecoderConfigOption) error
-	OnConfigChange(run func(in fsnotify.Event))
-	WatchConfig()
 }
 
 var defaultConfig *viper.Viper
