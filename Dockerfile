@@ -1,6 +1,6 @@
 # Build Stage
 ARG BUILDPLATFORM
-FROM --platform=${BUILDPLATFORM} golang:1.24.2 AS build-stage
+FROM --platform=${BUILDPLATFORM} golang:1.24.3 AS build-stage
 
 LABEL app="inotify-tasker"
 LABEL REPO="https://github.com/astr0n8t/inotify-tasker"
